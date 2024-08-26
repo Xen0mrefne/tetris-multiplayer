@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game</title>
+    
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script type="module">
+        import { canvas } from "./js/game.js";
+        import RoomService from "./js/room.js"
+
+
+        window.addEventListener("load", () => {
+            canvas.width = 300;
+            canvas.height = 300;
+
+            document.getElementById("game").append(canvas)
+
+            const dialog = document.querySelector("dialog");
+            dialog.showModal();
+
+            const formPlayer = dialog.querySelector("form");
+
+            dialog.addEventListener("close", () => {
+
+                let playerName = formPlayer.elements["playerName"].value !== "" ? formPlayer.elements["playerName"].value : "Anonimo" + Math.floor(Math.random() * 3000);
+                formPlayer.reset();
+
+                const room = new RoomService();
+
+                room.connect(playerName);
+
+                document.getElementById("game-container").focus();
+                
+            })
+        })
+    </script>
+</head>
+<body>
+    <main>
+        <div id="game-container" tabindex="0">
+            <div id="game">
+                <div class="player-list">
+                    <h3>Jugadores:</h3>
+                    <ul id="players"></ul>
+                </div>
+            </div>
+            <p>Score: <span id="score">0</span></p>
+        </div>
+        <div class="chat-container">
+            <h3>Chat</h3>
+            <ul id="chat"></ul>
+            <form name="form-message" class="form-message" action="">
+                <input name="message" type="text" placeholder="Escribe un mensaje" disabled>
+                <button class="btn green" type="submit" disabled>Enviar</button>
+            </form>
+        </div>
+    </main>
+
+    <dialog>
+        <form class="player-form" method="dialog">
+            <label>
+                Ingresa tu nombre
+                <input name="playerName" type="text" placeholder="Anonimo">
+            </label>
+            <button class="btn green" type="submit">Listo</button>
+        </form>
+    </dialog>
+</body>
+</html>
